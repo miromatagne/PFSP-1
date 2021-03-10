@@ -5,6 +5,7 @@
 import sys
 import random
 import argparse
+from instance import Instance
 
 
 def parse_args():
@@ -37,15 +38,21 @@ def parse_args():
         pivoting = 1
     if args.exchange:
         neighbourhood = 1
-    elif args.inster:
+    elif args.insert:
         neighbourhood = 2
     if args.srz:
         initial_solution = 1
 
-    return pivoting, neighbourhood, initial_solution
+    return args.instance, pivoting, neighbourhood, initial_solution
 
 
 if __name__ == '__main__':
-    piuvoting, nighbourhood, initial_solution = parse_args()
+    filename, pivoting, nighbourhood, initial_solution = parse_args()
     # Initialize random seed
     random.seed(4)
+
+    instance = Instance()
+
+    instance.read_data_from_file(filename)
+
+    print(instance.compute_wct([i for i in range(50)]))
