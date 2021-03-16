@@ -34,10 +34,10 @@ class Instance:
             return False
 
     def compute_wct(self, sol):
-        previous_machine_end_time = [0 for i in range(self.nb_jobs)]
+        previous_machine_end_time = [0 for i in range(len(sol))]
 
         # First machine
-        for j in range(self.nb_jobs):
+        for j in range(len(sol)):
             job_number = sol[j]
             previous_machine_end_time[j] = previous_machine_end_time[j -
                                                                      1] + self.processing_times_matrix[job_number][0]
@@ -45,12 +45,25 @@ class Instance:
         for m in range(1, self.nb_machines):
             previous_machine_end_time[0] += self.processing_times_matrix[sol[0]][m]
             previous_job_end_time = previous_machine_end_time[0]
-            for j in range(1, self.nb_jobs):
+            for j in range(1, len(sol)):
                 job_number = sol[j]
                 previous_machine_end_time[j] = max(
                     previous_job_end_time, previous_machine_end_time[j]) + self.processing_times_matrix[job_number][m]
                 previous_job_end_time = previous_machine_end_time[j]
         wct = 0
-        for j in range(self.nb_jobs):
+        for j in range(len(sol)):
             wct += previous_machine_end_time[j] * self.priority[sol[j]]
         return wct
+
+    def get_nb_jobs(self):
+        return self.nb_jobs
+
+    def get_weighed_sum(self):
+        weights = {}
+        for i in range(self.nb_jobs):
+            total_processing_time = 0
+            total_processing_time += sum(self.processing_times_matrix[i])
+            weights[i] = total_processing_time * self.priority[i]
+        sorted_weighed_sum = dict(
+            sorted(weights.items(), key=lambda item: item[1]))
+        return sorted_weighed_sum.keys()

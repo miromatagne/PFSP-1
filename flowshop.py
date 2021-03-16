@@ -6,6 +6,7 @@ import sys
 import random
 import argparse
 from instance import Instance
+from initial_solution import get_random_permutation, get_rz_heuristic
 
 
 def parse_args():
@@ -47,12 +48,16 @@ def parse_args():
 
 
 if __name__ == '__main__':
-    filename, pivoting, nighbourhood, initial_solution = parse_args()
+    filename, pivoting_arg, nighbourhood_arg, initial_solution_arg = parse_args()
     # Initialize random seed
-    random.seed(4)
+    random.seed(7)
 
     instance = Instance()
-
     instance.read_data_from_file(filename)
+    if initial_solution_arg == 0:
+        initial_solution = get_random_permutation(instance.get_nb_jobs())
+    else:
+        initial_solution = get_rz_heuristic(instance)
 
-    print(instance.compute_wct([i for i in range(50)]))
+    print(initial_solution)
+    # print(instance.compute_wct(get_random_permutation(instance.get_nb_jobs())))
