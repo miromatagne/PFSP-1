@@ -65,9 +65,9 @@ class Instance:
     def get_weighed_sum(self):
         weights = {}
         for i in range(self.nb_jobs):
-            total_processing_time = 0
-            total_processing_time += sum(self.processing_times_matrix[i])
-            weights[i] = total_processing_time * self.priority[i]
+            total_processing_time = sum(self.processing_times_matrix[i])
+            weights[i] = total_processing_time / self.priority[i]
         sorted_weighed_sum = dict(
             sorted(weights.items(), key=lambda item: item[1]))
+        print(sorted_weighed_sum)
         return sorted_weighed_sum.keys()

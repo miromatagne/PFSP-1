@@ -13,7 +13,7 @@ def get_rz_heuristic(instance):
     first_job = weighed_sum.pop(0)
     sol = [first_job]
     for i in range(len(weighed_sum)):
-        job = weighed_sum.pop()
+        job = weighed_sum.pop(0)
         min_wct = float('inf')
         min_sol = None
         for j in range(len(sol)+1):
