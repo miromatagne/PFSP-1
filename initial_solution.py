@@ -2,6 +2,7 @@ import random
 
 
 def get_random_permutation(nb_jobs):
+    random.seed(5)
     job_numbers = list(range(nb_jobs))
     random.shuffle(job_numbers)
     return job_numbers
@@ -23,5 +24,4 @@ def get_rz_heuristic(instance):
                 min_wct = wct
                 min_sol = temp_sol
         sol = min_sol
-
     return sol

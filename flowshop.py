@@ -7,6 +7,17 @@ import random
 import argparse
 from instance import Instance
 from initial_solution import get_random_permutation, get_rz_heuristic
+from neighbour import get_neighbour
+
+FIRST_IMPROVEMENT = "FIRST_IMPROVEMENT"
+BEST_IMPROVEMENT = "BEST_IMPROVEMENT"
+
+TRANSPOSE = "TRANSPOSE"
+EXCHANGE = "EXCHANGE"
+INSERT = "INSERT"
+
+SRZ = "SRZ"
+RANDOM_INIT = "RANDOM_INIT"
 
 
 def parse_args():
@@ -32,32 +43,33 @@ def parse_args():
 
     args = parser.parse_args()
 
-    pivoting = 0
-    neighbourhood = 0
-    initial_solution = 0
+    pivoting = FIRST_IMPROVEMENT
+    neighbourhood = TRANSPOSE
+    initial_solution = RANDOM_INIT
     if args.best:
-        pivoting = 1
+        pivoting = BEST_IMPROVEMENT
     if args.exchange:
-        neighbourhood = 1
+        neighbourhood = EXCHANGE
     elif args.insert:
-        neighbourhood = 2
+        neighbourhood = INSERT
     if args.srz:
-        initial_solution = 1
+        initial_solution = SRZ
 
     return args.instance, pivoting, neighbourhood, initial_solution
 
 
 if __name__ == '__main__':
-    filename, pivoting_arg, nighbourhood_arg, initial_solution_arg = parse_args()
+    filename, pivoting_arg, neighbourhood_arg, initial_solution_arg = parse_args()
     # Initialize random seed
-    random.seed(7)
+    # random.seed(7)
 
     instance = Instance()
     instance.read_data_from_file(filename)
-    if initial_solution_arg == 0:
+    if initial_solution_arg == RANDOM_INIT:
         initial_solution = get_random_permutation(instance.get_nb_jobs())
     else:
         initial_solution = get_rz_heuristic(instance)
 
-    print(initial_solution)
+    print(get_neighbour(instance, initial_solution, pivoting_arg, neighbourhood_arg))
+    # print(initial_solution)
     # print(instance.compute_wct(get_random_permutation(instance.get_nb_jobs())))

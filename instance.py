@@ -1,3 +1,7 @@
+FIRST_IMPROVEMENT = 0
+BEST_IMPROVEMENT = 1
+
+
 class Instance:
 
     def __init__(self):
