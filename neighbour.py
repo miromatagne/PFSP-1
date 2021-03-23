@@ -28,6 +28,7 @@ def get_neighbour(instance, solution, pivoting_rule, neighbourhood_method):
 
 
 def get_first_improvement_neighbour(instance, solution, neighbourhood_method):
+    # print(solution)
     initial_wct = instance.compute_wct(solution)
     # print(initial_wct)
     if neighbourhood_method == TRANSPOSE:
@@ -51,6 +52,17 @@ def get_first_improvement_neighbour(instance, solution, neighbourhood_method):
                 temp_sol[i], temp_sol[j] = temp_sol[j], temp_sol[i]
                 wct = instance.compute_wct(temp_sol)
                 # print(i)
+                if wct < initial_wct:
+                    return temp_sol, wct
+        return None, None
+    if neighbourhood_method == INSERT:
+        for i in range(len(solution)-1):
+            for j in range(i+1, len(solution)):
+                temp_sol = solution.copy()
+                temp_rem = temp_sol.pop(i)
+                temp_sol.insert(j, temp_rem)
+                wct = instance.compute_wct(temp_sol)
+                # print(temp_sol)
                 if wct < initial_wct:
                     return temp_sol, wct
         return None, None
@@ -84,6 +96,20 @@ def get_best_improvement_neighbour(instance, solution, neighbourhood_method):
                 temp_sol[i], temp_sol[j] = temp_sol[j], temp_sol[i]
                 wct = instance.compute_wct(temp_sol)
                 # print(i)
+                if wct < min_wct:
+                    min_wct = wct
+                    min_sol = temp_sol
+        if min_wct != initial_wct and min_sol:
+            return min_sol, min_wct
+        return None, None
+    if neighbourhood_method == INSERT:
+        for i in range(len(solution)-1):
+            for j in range(i+1, len(solution)):
+                temp_sol = solution.copy()
+                temp_rem = temp_sol.pop(i)
+                temp_sol.insert(j, temp_rem)
+                wct = instance.compute_wct(temp_sol)
+                # print(temp_sol)
                 if wct < min_wct:
                     min_wct = wct
                     min_sol = temp_sol
