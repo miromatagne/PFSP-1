@@ -69,5 +69,5 @@ class Instance:
             weights[i] = total_processing_time / self.priority[i]
         sorted_weighed_sum = dict(
             sorted(weights.items(), key=lambda item: item[1]))
-        print(sorted_weighed_sum)
+        # print(sorted_weighed_sum)
         return sorted_weighed_sum.keys()

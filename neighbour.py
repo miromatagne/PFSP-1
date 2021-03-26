@@ -7,6 +7,7 @@ INSERT = "INSERT"
 
 
 def get_neighbour(instance, solution, pivoting_rule, neighbourhood_method):
+    print(solution)
     if pivoting_rule == FIRST_IMPROVEMENT:
         sol, wct = solution, 0
         while True:
@@ -60,14 +61,15 @@ def get_first_improvement_neighbour(instance, solution, neighbourhood_method):
                     return temp_sol, wct
         return None, initial_wct
     if neighbourhood_method == INSERT:
-        for i in range(len(solution)-1):
-            for j in range(i+1, len(solution)):
+        for i in range(len(solution)):
+            for j in range(len(solution)):
                 temp_sol = solution.copy()
                 temp_rem = temp_sol.pop(i)
                 temp_sol.insert(j, temp_rem)
                 wct = instance.compute_wct(temp_sol)
                 # print(temp_sol)
                 if wct < initial_wct:
+                    print(temp_sol, wct)
                     return temp_sol, wct
         return None, initial_wct
 
@@ -107,8 +109,8 @@ def get_best_improvement_neighbour(instance, solution, neighbourhood_method):
             return min_sol, min_wct
         return None, initial_wct
     if neighbourhood_method == INSERT:
-        for i in range(len(solution)-1):
-            for j in range(i+1, len(solution)):
+        for i in range(len(solution)):
+            for j in range(len(solution)):
                 temp_sol = solution.copy()
                 temp_rem = temp_sol.pop(i)
                 temp_sol.insert(j, temp_rem)
