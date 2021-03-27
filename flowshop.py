@@ -73,9 +73,10 @@ if __name__ == '__main__':
         initial_solution = get_random_permutation(instance.get_nb_jobs())
     else:
         initial_solution = get_rz_heuristic(instance)
-
+    print("Initial solution : ", initial_solution)
     start_time = time.time()
-    print(instance.solve(initial_solution, pivoting_arg, neighbourhood_arg))
-    print("--- %s seconds ---" % (time.time() - start_time))
-    # print(initial_solution)
-    # print(instance.compute_wct(get_random_permutation(instance.get_nb_jobs())))
+    solution, wct = instance.solve(
+        initial_solution, pivoting_arg, neighbourhood_arg)
+    print("Final job permutation : ", solution)
+    print("Weighted sum of Completion Times : ", wct)
+    print("Execution time : %s seconds" % (time.time() - start_time))
