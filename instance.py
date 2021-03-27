@@ -1,8 +1,17 @@
-FIRST_IMPROVEMENT = 0
-BEST_IMPROVEMENT = 1
+"""
+    PFSP instance file
+"""
+
+from neighbour import get_best_improvement_neighbour, get_first_improvement_neighbour
+
+FIRST_IMPROVEMENT = "FIRST_IMPROVEMENT"
+BEST_IMPROVEMENT = "BEST_IMPROVEMENT"
 
 
 class Instance:
+    """
+        Class describing an instance of the PFSP problem.
+    """
 
     def __init__(self):
         self.nb_jobs = 0
@@ -12,6 +21,11 @@ class Instance:
         self.priority = []
 
     def read_data_from_file(self, filename):
+        """
+            Reads data from a PFSP instance file and stores the content.
+
+            :param filename: name of the instance file
+        """
         try:
             with open(filename, "r") as f:
                 print("File " + filename + " is now open, start to read...")
@@ -38,6 +52,11 @@ class Instance:
             return False
 
     def compute_wct(self, sol):
+        """
+            Computes the Weighed sum of Completion Times (WCT) for a given solution (ordering of jobs).
+
+            :param sol: job ordering on which the WCT is computed
+        """
         previous_machine_end_time = [0 for i in range(len(sol))]
 
         # First machine
@@ -63,6 +82,9 @@ class Instance:
         return self.nb_jobs
 
     def get_weighed_sum(self):
+        """
+            Computes the weighed sum used for the SRZ Heuristic initial solution.
+        """
         weights = {}
         for i in range(self.nb_jobs):
             total_processing_time = sum(self.processing_times_matrix[i])
@@ -71,3 +93,33 @@ class Instance:
             sorted(weights.items(), key=lambda item: item[1]))
         # print(sorted_weighed_sum)
         return sorted_weighed_sum.keys()
+
+    def solve(self, solution, pivoting_rule, neighbourhood_method):
+        """
+            Solves the PSFP problem and returns the solution.
+
+            :param solution: initial solution used to start the algorithm
+            :pivoting_rule: pivoting rule used during the algorithm (LEAST_IMPROVEMENT or BEST_IMPORVEMENT)
+            :neighborhood_rule: neighborhood rule used during the algorithm (EXCHANGE, TRASPOSE or INSERT)
+        """
+        if pivoting_rule == FIRST_IMPROVEMENT:
+            sol, wct = solution, 0
+            while True:
+                temp_sol, temp_wct = get_first_improvement_neighbour(
+                    self, sol, neighbourhood_method)
+                # print(temp_wct)
+                if not temp_sol:
+                    if wct == 0:
+                        wct = temp_wct
+                    return sol, wct
+                sol, wct = temp_sol, temp_wct
+        else:
+            sol, wct = solution, 0
+            while True:
+                temp_sol, temp_wct = get_best_improvement_neighbour(
+                    self, sol, neighbourhood_method)
+                if not temp_sol:
+                    if wct == 0:
+                        wct = temp_wct
+                    return sol, wct
+                sol, wct = temp_sol, temp_wct

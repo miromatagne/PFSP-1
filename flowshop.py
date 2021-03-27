@@ -7,7 +7,7 @@ import random
 import argparse
 from instance import Instance
 from initial_solution import get_random_permutation, get_rz_heuristic
-from neighbour import get_neighbour
+import time
 
 FIRST_IMPROVEMENT = "FIRST_IMPROVEMENT"
 BEST_IMPROVEMENT = "BEST_IMPROVEMENT"
@@ -21,6 +21,10 @@ RANDOM_INIT = "RANDOM_INIT"
 
 
 def parse_args():
+    """
+        Parses the arguments.
+    """
+
     parser = argparse.ArgumentParser()
     parser.add_argument("instance", help="Instance file name")
     pivoting_group = parser.add_mutually_exclusive_group()
@@ -70,6 +74,8 @@ if __name__ == '__main__':
     else:
         initial_solution = get_rz_heuristic(instance)
 
-    print(get_neighbour(instance, initial_solution, pivoting_arg, neighbourhood_arg))
+    start_time = time.time()
+    print(instance.solve(initial_solution, pivoting_arg, neighbourhood_arg))
+    print("--- %s seconds ---" % (time.time() - start_time))
     # print(initial_solution)
     # print(instance.compute_wct(get_random_permutation(instance.get_nb_jobs())))

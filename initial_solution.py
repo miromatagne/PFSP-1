@@ -1,7 +1,17 @@
+"""
+    Computes the initial solution of the the PFSP instance, either based
+    on a random permutation or on a Simplified RZ Heuristic.
+"""
+
 import random
 
 
 def get_random_permutation(nb_jobs):
+    """
+        Returns a random permutation of the jobs.
+
+        :param nb_jobs: number of jobs in the considered instance
+    """
     random.seed(5)
     job_numbers = list(range(nb_jobs))
     random.shuffle(job_numbers)
@@ -9,6 +19,11 @@ def get_random_permutation(nb_jobs):
 
 
 def get_rz_heuristic(instance):
+    """
+        Returns an initial solution based on a simplified RZ Heuristic.
+
+        :param instance: instance of PFSP problem on which the initial solution is computed.
+    """
     weighed_sum = list(instance.get_weighed_sum())
     first_job = weighed_sum.pop(0)
     sol = [first_job]
