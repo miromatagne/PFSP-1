@@ -31,7 +31,7 @@ def get_first_improvement_neighbour(instance, solution, neighbourhood_method):
         return None, initial_wct
     if neighbourhood_method == EXCHANGE:
         for i in range(len(solution)-1):
-            for j in range(i+1, len(solution)-1):
+            for j in range(i+1, len(solution)):
                 solution[i], solution[j] = solution[j], solution[i]
                 wct = instance.compute_wct(solution)
                 # print(i)
@@ -45,12 +45,12 @@ def get_first_improvement_neighbour(instance, solution, neighbourhood_method):
             temp_rem = temp_sol.pop(i)
             temp_sol.insert(0, temp_rem)
             for j in range(len(solution)):
-                if i != j:
-                    wct = instance.compute_wct(temp_sol)
-                    if wct < initial_wct:
-                        return temp_sol, wct
-                    if j != len(solution) - 1:
-                        temp_sol[j], temp_sol[j+1] = temp_sol[j+1], temp_sol[j]
+                print(temp_sol)
+                wct = instance.compute_wct(temp_sol)
+                if wct < initial_wct:
+                    return temp_sol, wct
+                if j != len(solution) - 1:
+                    temp_sol[j], temp_sol[j+1] = temp_sol[j+1], temp_sol[j]
         return None, initial_wct
 
 
@@ -70,7 +70,7 @@ def get_best_improvement_neighbour(instance, solution, neighbourhood_method):
             # print(temp_sol)
             if wct < min_wct:
                 min_wct = wct
-                min_sol = solution
+                min_sol = solution.copy()
             if i != len(solution) - 1:
                 solution[i], solution[i+1] = solution[i+1], solution[i]
         if min_wct != initial_wct and min_sol:
@@ -78,13 +78,13 @@ def get_best_improvement_neighbour(instance, solution, neighbourhood_method):
         return None, initial_wct
     if neighbourhood_method == EXCHANGE:
         for i in range(len(solution)-1):
-            for j in range(i+1, len(solution)-1):
+            for j in range(i+1, len(solution)):
                 solution[i], solution[j] = solution[j], solution[i]
                 wct = instance.compute_wct(solution)
                 # print(i)
                 if wct < min_wct:
                     min_wct = wct
-                    min_sol = solution
+                    min_sol = solution.copy()
                 solution[i], solution[j] = solution[j], solution[i]
         if min_wct != initial_wct and min_sol:
             return min_sol, min_wct
@@ -95,14 +95,13 @@ def get_best_improvement_neighbour(instance, solution, neighbourhood_method):
             temp_rem = temp_sol.pop(i)
             temp_sol.insert(0, temp_rem)
             for j in range(len(solution)-1):
-                if i != j:
-                    wct = instance.compute_wct(temp_sol)
-                    # print(temp_sol)
-                    if wct < min_wct:
-                        min_wct = wct
-                        min_sol = temp_sol.copy()
-                    if j != len(solution) - 1:
-                        temp_sol[j], temp_sol[j+1] = temp_sol[j+1], temp_sol[j]
+                wct = instance.compute_wct(temp_sol)
+                # print(temp_sol)
+                if wct < min_wct:
+                    min_wct = wct
+                    min_sol = temp_sol.copy()
+                if j != len(solution) - 1:
+                    temp_sol[j], temp_sol[j+1] = temp_sol[j+1], temp_sol[j]
         if min_wct != initial_wct and min_sol:
             #print(min_sol, min_wct)
             return min_sol, min_wct

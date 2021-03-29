@@ -27,6 +27,7 @@ def parse_args():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("instance", help="Instance file name")
+    parser.add_argument("--measure", help="Measure mode", action="store_true")
     pivoting_group = parser.add_mutually_exclusive_group()
     pivoting_group.add_argument(
         "--first", help="first-improvement pivoting rule", action="store_true")
@@ -59,11 +60,11 @@ def parse_args():
     if args.srz:
         initial_solution = SRZ
 
-    return args.instance, pivoting, neighbourhood, initial_solution
+    return args.instance, pivoting, neighbourhood, initial_solution, args.measure
 
 
 if __name__ == '__main__':
-    filename, pivoting_arg, neighbourhood_arg, initial_solution_arg = parse_args()
+    filename, pivoting_arg, neighbourhood_arg, initial_solution_arg, measure = parse_args()
     # Initialize random seed
     # random.seed(7)
 
