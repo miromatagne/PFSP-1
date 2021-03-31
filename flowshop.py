@@ -8,6 +8,7 @@ import argparse
 from instance import Instance
 from initial_solution import get_random_permutation, get_rz_heuristic
 import time
+import os
 
 FIRST_IMPROVEMENT = "FIRST_IMPROVEMENT"
 BEST_IMPROVEMENT = "BEST_IMPROVEMENT"
@@ -79,23 +80,62 @@ def parse_args():
     return args.vnd, args.instance, pivoting, neighbourhood, initial_solution, args.measure, neighbourhood_order
 
 
+def measure_times():
+    os.chdir("instances")
+    files = os.listdir()
+    files.sort()
+    output_file = open("test.txt", "w")
+    initial_solutions = [RANDOM_INIT, SRZ]
+    pivoting_args = [FIRST_IMPROVEMENT, BEST_IMPROVEMENT]
+    neighbourhood_args = [TRANSPOSE, EXCHANGE, INSERT]
+    for f in files:
+        if "." not in f and "100" not in f:
+            instance = Instance()
+            instance.read_data_from_file(f)
+            for initial_sol_arg in initial_solutions:
+                for pivoting_arg in pivoting_args:
+                    for neighbourhood_arg in neighbourhood_args:
+                        start_time = time.time()
+                        if initial_sol_arg == RANDOM_INIT:
+                            initial_solution = get_random_permutation(
+                                instance.get_nb_jobs())
+                        else:
+                            initial_solution = get_rz_heuristic(instance)
+                        print("Initial solution : ", initial_solution)
+                        solution, wct = instance.solve_ii(
+                            initial_solution, pivoting_arg, neighbourhood_arg)
+                        output_file.write(initial_sol_arg + " " + pivoting_arg + " " +
+                                          neighbourhood_arg + " " + str(wct) + " " + str(time.time() - start_time))
+
+                        print("Final job permutation : ", solution)
+                        print("Weighted sum of Completion Times : ", wct)
+                        print("Execution time : %s seconds" %
+                              (time.time() - start_time))
+                        output_file.close()
+                        return None
+    return None
+
+
 if __name__ == '__main__':
     vnd, filename, pivoting_arg, neighbourhood_arg, initial_solution_arg, measure, neighbourhood_order = parse_args()
+    if measure:
+        measure_times()
+    else:
+        instance = Instance()
+        instance.read_data_from_file(filename)
+        if initial_solution_arg == RANDOM_INIT:
+            initial_solution = get_random_permutation(instance.get_nb_jobs())
+        else:
+            initial_solution = get_rz_heuristic(instance)
+        print("Initial solution : ", initial_solution)
+        start_time = time.time()
 
-    instance = Instance()
-    instance.read_data_from_file(filename)
-    if initial_solution_arg == RANDOM_INIT:
-        initial_solution = get_random_permutation(instance.get_nb_jobs())
-    else:
-        initial_solution = get_rz_heuristic(instance)
-    print("Initial solution : ", initial_solution)
-    start_time = time.time()
-    if vnd:
-        solution, wct = instance.solve_vnd(
-            initial_solution, neighbourhood_order)
-    else:
-        solution, wct = instance.solve_ii(
-            initial_solution, pivoting_arg, neighbourhood_arg)
-    print("Final job permutation : ", solution)
-    print("Weighted sum of Completion Times : ", wct)
-    print("Execution time : %s seconds" % (time.time() - start_time))
+        if vnd:
+            solution, wct = instance.solve_vnd(
+                initial_solution, neighbourhood_order)
+        else:
+            solution, wct = instance.solve_ii(
+                initial_solution, pivoting_arg, neighbourhood_arg)
+        print("Final job permutation : ", solution)
+        print("Weighted sum of Completion Times : ", wct)
+        print("Execution time : %s seconds" % (time.time() - start_time))
