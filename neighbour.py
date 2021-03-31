@@ -12,9 +12,8 @@ EXCHANGE = "EXCHANGE"
 INSERT = "INSERT"
 
 
-def get_first_improvement_neighbour(instance, solution, neighbourhood_method):
+def get_first_improvement_neighbour(instance, solution, initial_wct, neighbourhood_method):
     # print(solution)
-    initial_wct = instance.compute_wct(solution)
     # print(initial_wct)
     if neighbourhood_method == TRANSPOSE:
         for i in range(len(solution)):
@@ -45,7 +44,7 @@ def get_first_improvement_neighbour(instance, solution, neighbourhood_method):
             temp_rem = temp_sol.pop(i)
             temp_sol.insert(0, temp_rem)
             for j in range(len(solution)):
-                print(temp_sol)
+                # print(temp_sol)
                 wct = instance.compute_wct(temp_sol)
                 if wct < initial_wct:
                     return temp_sol, wct
@@ -54,8 +53,7 @@ def get_first_improvement_neighbour(instance, solution, neighbourhood_method):
         return None, initial_wct
 
 
-def get_best_improvement_neighbour(instance, solution, neighbourhood_method):
-    initial_wct = instance.compute_wct(solution)
+def get_best_improvement_neighbour(instance, solution, initial_wct, neighbourhood_method):
     min_wct = initial_wct
     min_sol = None
     if neighbourhood_method == TRANSPOSE:
@@ -96,13 +94,27 @@ def get_best_improvement_neighbour(instance, solution, neighbourhood_method):
             temp_sol.insert(0, temp_rem)
             for j in range(len(solution)-1):
                 wct = instance.compute_wct(temp_sol)
-                # print(temp_sol)
                 if wct < min_wct:
                     min_wct = wct
                     min_sol = temp_sol.copy()
                 if j != len(solution) - 1:
                     temp_sol[j], temp_sol[j+1] = temp_sol[j+1], temp_sol[j]
         if min_wct != initial_wct and min_sol:
-            #print(min_sol, min_wct)
             return min_sol, min_wct
         return None, initial_wct
+    # if neighbourhood_method == INSERT:
+    #     for i in range(len(solution)):
+    #         temp_sol = solution.copy()
+    #         value = temp_sol.pop(i)
+    #         #temp_sol.insert(0, temp_rem)
+    #         for j in range(len(solution)):
+    #             if i != j and j != i-1:
+    #                 temp_sol.insert(j, value)
+    #                 wct = instance.compute_wct(temp_sol)
+    #                 if wct < min_wct:
+    #                     min_wct = wct
+    #                     min_sol = temp_sol.copy()
+    #                 temp_sol.remove(value)
+    #     if min_wct != initial_wct and min_sol:
+    #         return min_sol, min_wct
+    #     return None, initial_wct

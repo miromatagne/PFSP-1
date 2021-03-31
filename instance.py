@@ -94,19 +94,20 @@ class Instance:
         # print(sorted_weighed_sum)
         return sorted_weighed_sum.keys()
 
-    def solve(self, solution, pivoting_rule, neighbourhood_method):
+    def solve_ii(self, solution, pivoting_rule, neighbourhood_method):
         """
-            Solves the PSFP problem and returns the solution.
+            Solves the PSFP problem using Iterative Improvement and returns the solution.
 
             :param solution: initial solution used to start the algorithm
             :pivoting_rule: pivoting rule used during the algorithm (LEAST_IMPROVEMENT or BEST_IMPORVEMENT)
             :neighborhood_rule: neighborhood rule used during the algorithm (EXCHANGE, TRASPOSE or INSERT)
         """
+        initial_wct = self.compute_wct(solution)
         if pivoting_rule == FIRST_IMPROVEMENT:
-            sol, wct = solution, 0
+            sol, wct = solution, initial_wct
             while True:
                 temp_sol, temp_wct = get_first_improvement_neighbour(
-                    self, sol, neighbourhood_method)
+                    self, sol, wct, neighbourhood_method)
                 # print(temp_wct)
                 if not temp_sol:
                     if wct == 0:
@@ -114,12 +115,31 @@ class Instance:
                     return sol, wct
                 sol, wct = temp_sol, temp_wct
         else:
-            sol, wct = solution, 0
+            sol, wct = solution, initial_wct
             while True:
                 temp_sol, temp_wct = get_best_improvement_neighbour(
-                    self, sol, neighbourhood_method)
+                    self, sol, wct, neighbourhood_method)
                 if not temp_sol:
                     if wct == 0:
                         wct = temp_wct
                     return sol, wct
                 sol, wct = temp_sol, temp_wct
+
+    def solve_vnd(self, solution, neighbourhood_order):
+        k = 3
+        i = 0
+        sol = solution.copy()
+        wct = self.compute_wct(solution)
+        while k > i:
+            # print(i)
+            temp_sol, temp_wct = get_first_improvement_neighbour(
+                self, sol.copy(), wct, neighbourhood_order[i])
+            if not temp_sol:
+                i = i + 1
+            else:
+                sol = temp_sol.copy()
+                wct = temp_wct
+                print(wct)
+                print(i)
+                i = 0
+        return sol, wct
