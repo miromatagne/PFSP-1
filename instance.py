@@ -139,7 +139,7 @@ class Instance:
             else:
                 sol = temp_sol.copy()
                 wct = temp_wct
-                print(wct)
-                print(i)
+                # print(wct)
+                # print(i)
                 i = 0
         return sol, wct

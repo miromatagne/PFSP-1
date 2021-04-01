@@ -84,12 +84,12 @@ def measure_times():
     os.chdir("instances")
     files = os.listdir()
     files.sort()
-    output_file = open("test.txt", "w")
     initial_solutions = [RANDOM_INIT, SRZ]
     pivoting_args = [FIRST_IMPROVEMENT, BEST_IMPROVEMENT]
     neighbourhood_args = [TRANSPOSE, EXCHANGE, INSERT]
     for f in files:
-        if "." not in f and "100" not in f:
+        if "." not in f:
+            output_file = open("./measures/" + f + ".txt", "w")
             instance = Instance()
             instance.read_data_from_file(f)
             for initial_sol_arg in initial_solutions:
@@ -105,14 +105,13 @@ def measure_times():
                         solution, wct = instance.solve_ii(
                             initial_solution, pivoting_arg, neighbourhood_arg)
                         output_file.write(initial_sol_arg + " " + pivoting_arg + " " +
-                                          neighbourhood_arg + " " + str(wct) + " " + str(time.time() - start_time))
+                                          neighbourhood_arg + " " + str(wct) + " " + str(time.time() - start_time) + "\n")
 
                         print("Final job permutation : ", solution)
                         print("Weighted sum of Completion Times : ", wct)
                         print("Execution time : %s seconds" %
                               (time.time() - start_time))
-                        output_file.close()
-                        return None
+            output_file.close()
     return None
 
 
