@@ -7,6 +7,7 @@ import random
 import argparse
 from instance import Instance
 from initial_solution import get_random_permutation, get_rz_heuristic
+from measures import measure_vnd_times, measure_ii_times, get_experimental_results_vnd
 import time
 import os
 
@@ -80,120 +81,12 @@ def parse_args():
     return args.vnd, args.instance, pivoting, neighbourhood, initial_solution, args.measure, neighbourhood_order
 
 
-def measure_vnd_times():
-    os.chdir("instances")
-    files = os.listdir()
-    files.sort()
-    files = files[22:]
-    initial_solutions = [RANDOM_INIT, SRZ]
-    neighbourhood_orders = [FIRST_ORDER, SECOND_ORDER]
-    for f in files:
-        if "." not in f and f != "measures":
-            output_file = open("./measures/VND/" + f + ".txt", "w")
-            instance = Instance()
-            instance.read_data_from_file(f)
-            for initial_sol_arg in initial_solutions:
-                for neighbourhood_order in neighbourhood_orders:
-                    start_time = time.time()
-                    if initial_sol_arg == RANDOM_INIT:
-                        initial_solution = get_random_permutation(
-                            instance.get_nb_jobs())
-                    else:
-                        initial_solution = get_rz_heuristic(instance)
-                    print("Initial solution : ", initial_solution)
-                    solution, wct = instance.solve_vnd(
-                        initial_solution, neighbourhood_order)
-                    output_file.write(initial_sol_arg + " " +
-                                      "_".join(neighbourhood_order) + " " + str(wct) + " " + str(time.time() - start_time) + "\n")
-
-                    print("Final job permutation : ", solution)
-                    print("Weighted sum of Completion Times : ", wct)
-                    print("Execution time : %s seconds" %
-                          (time.time() - start_time))
-            output_file.close()
-    return None
-
-
-def measure_ii_times():
-    os.chdir("instances")
-    files = os.listdir()
-    files.sort()
-    initial_solutions = [RANDOM_INIT, SRZ]
-    pivoting_args = [FIRST_IMPROVEMENT, BEST_IMPROVEMENT]
-    neighbourhood_args = [TRANSPOSE, EXCHANGE, INSERT]
-    for f in files:
-        if "." not in f and f != "measures":
-            output_file = open("./measures/" + f + ".txt", "w")
-            instance = Instance()
-            instance.read_data_from_file(f)
-            for initial_sol_arg in initial_solutions:
-                for pivoting_arg in pivoting_args:
-                    for neighbourhood_arg in neighbourhood_args:
-                        start_time = time.time()
-                        if initial_sol_arg == RANDOM_INIT:
-                            initial_solution = get_random_permutation(
-                                instance.get_nb_jobs())
-                        else:
-                            initial_solution = get_rz_heuristic(instance)
-                        print("Initial solution : ", initial_solution)
-                        solution, wct = instance.solve_ii(
-                            initial_solution, pivoting_arg, neighbourhood_arg)
-                        output_file.write(initial_sol_arg + " " + pivoting_arg + " " +
-                                          neighbourhood_arg + " " + str(wct) + " " + str(time.time() - start_time) + "\n")
-
-                        print("Final job permutation : ", solution)
-                        print("Weighted sum of Completion Times : ", wct)
-                        print("Execution time : %s seconds" %
-                              (time.time() - start_time))
-            output_file.close()
-    return None
-
-
-# def get_best_solutions():
-#     best_solutions_file = open("bestSolutions.txt")
-#     best_solutions_file.readline()
-#     best_solutions_dict = {}
-#     for line in best_solutions_file.readlines():
-#         instance, solution = line.split(
-#             ",")[0].strip(), line.split(",")[1].strip()
-#         best_solutions_dict[instance] = int(float(solution))
-
-
-def get_experimental_results():
-    os.chdir("instances/measures")
-    initial_solutions = [RANDOM_INIT, SRZ]
-    pivoting_args = [FIRST_IMPROVEMENT, BEST_IMPROVEMENT]
-    neighbourhood_args = [TRANSPOSE, EXCHANGE, INSERT]
-    files = []
-    for init in initial_solutions:
-        for piv in pivoting_args:
-            for n in neighbourhood_args:
-                filename = init + "_" + piv + "_" + n + ".csv"
-                f = open(filename, "w")
-                f.write("instance,solution,execution_time" + "\n")
-                files.append(f)
-    result_files = os.listdir()
-    result_files.sort()
-    print(result_files)
-    for file_name in result_files:
-        if ".D" not in file_name and file_name != "measures":
-            f = open(file_name)
-            lines = f.readlines()
-            for i in range(len(lines)):
-                line = lines[i].split()
-                solution, time = line[3], line[4]
-                files[i].write(file_name.split(".")[0] + "," +
-                               solution + "," + time + "\n")
-            f.close()
-    for f in files:
-        f.close()
-
-
 if __name__ == '__main__':
     vnd, filename, pivoting_arg, neighbourhood_arg, initial_solution_arg, measure, neighbourhood_order = parse_args()
     if measure:
         if vnd:
-            measure_vnd_times()
+            get_experimental_results_vnd()
+            # measure_vnd_times()
         else:
             measure_ii_times()
     else:

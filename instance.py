@@ -126,6 +126,12 @@ class Instance:
                 sol, wct = temp_sol, temp_wct
 
     def solve_vnd(self, solution, neighbourhood_order):
+        """
+            Solves the PSFP problem using Variable Neighborhood Descent and returns the solution.
+
+            :param solution: initial solution used to start the algorithm
+            :neighborhood_order: neighborhood order used during the algorithm (FIRST_ORDER or SECOND_ORDER)
+        """
         k = 3
         i = 0
         sol = solution.copy()

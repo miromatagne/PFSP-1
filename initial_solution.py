@@ -11,6 +11,7 @@ def get_random_permutation(nb_jobs):
         Returns a random permutation of the jobs.
 
         :param nb_jobs: number of jobs in the considered instance
+        :return: random permutation of the jobs
     """
     print("Started generating random initial solution...")
     random.seed(5)
@@ -24,6 +25,7 @@ def get_rz_heuristic(instance):
         Returns an initial solution based on a simplified RZ Heuristic.
 
         :param instance: instance of PFSP problem on which the initial solution is computed.
+        :return: initial solution
     """
     print("Started generating initial solution based on Simplified RZ Heuristic...")
     weighed_sum = list(instance.get_weighed_sum())
