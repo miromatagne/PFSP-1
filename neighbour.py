@@ -23,8 +23,10 @@ def get_first_improvement_neighbour(instance, solution, initial_wct, neighbourho
         :param neighbourhood_method: TRANSPOSE, EXCHANGE or INSERT.
         :return: the first improving neighbour, or None if no improving neighbour was found
     """
+    # Swap a job with the next one (n total iterations)
     if neighbourhood_method == TRANSPOSE:
         for i in range(len(solution)):
+            # The last job is swapped with the first one
             if i == len(solution) - 1:
                 solution[0], solution[len(
                     solution)-1] = solution[len(solution)-1], solution[0]
@@ -36,6 +38,8 @@ def get_first_improvement_neighbour(instance, solution, initial_wct, neighbourho
             if i != len(solution) - 1:
                 solution[i], solution[i+1] = solution[i+1], solution[i]
         return None, initial_wct
+    # Exchange a job with any job that is following this job in the job list,
+    # to avoid duplicates
     if neighbourhood_method == EXCHANGE:
         for i in range(len(solution)-1):
             for j in range(i+1, len(solution)):
@@ -45,6 +49,8 @@ def get_first_improvement_neighbour(instance, solution, initial_wct, neighbourho
                     return solution, wct
                 solution[i], solution[j] = solution[j], solution[i]
         return None, initial_wct
+    # Insert a job at any place in the job list. To avoid popping and inserting too frequently,
+    # we insert the job at the first position and then swap it with the next one, and so on...
     if neighbourhood_method == INSERT:
         for i in range(len(solution)):
             temp_sol = solution.copy()

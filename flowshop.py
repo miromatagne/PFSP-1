@@ -1,5 +1,14 @@
 """
     Main file
+
+    Usage : flowshop.py instance [options]
+
+    Options :   --vnd for Variable Neighbourhood Descent (Iterative Improvement by default)
+                --first or --best for First or best improvement pivoting rule
+                --transpose --exchange or --insert for the neighbourhood rule
+                --random-init or --srz for the initial solution
+                --tei or --tie for the neighbourhood order (VND)
+
 """
 
 import sys
@@ -54,9 +63,9 @@ def parse_args():
         "--srz", help="simplified RZ heuristic initial solution", action="store_true")
     neighbourhood_order_group = parser.add_mutually_exclusive_group()
     neighbourhood_order_group.add_argument(
-        "--first_order", help="transpose neighborhood", action="store_true")
+        "--tei", help="transpose, exchange, insert neighborhood order", action="store_true")
     neighbourhood_order_group.add_argument(
-        "--second_order", help="exchange neighborhood", action="store_true")
+        "--tie", help="transpose, insert, exchange neighborhood order", action="store_true")
 
     args = parser.parse_args()
 
@@ -71,12 +80,12 @@ def parse_args():
         neighbourhood = INSERT
     if args.srz:
         initial_solution = SRZ
-    if args.first_order:
+    if args.tei:
         neighbourhood_order = FIRST_ORDER
-    elif args.second_order:
+    elif args.tie:
         neighbourhood_order = SECOND_ORDER
     else:
-        neighbourhood_order = None
+        neighbourhood_order = FIRST_ORDER
 
     return args.vnd, args.instance, pivoting, neighbourhood, initial_solution, args.measure, neighbourhood_order
 
@@ -85,8 +94,7 @@ if __name__ == '__main__':
     vnd, filename, pivoting_arg, neighbourhood_arg, initial_solution_arg, measure, neighbourhood_order = parse_args()
     if measure:
         if vnd:
-            get_experimental_results_vnd()
-            # measure_vnd_times()
+            measure_vnd_times()
         else:
             measure_ii_times()
     else:

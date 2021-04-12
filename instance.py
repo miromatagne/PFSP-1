@@ -38,14 +38,11 @@ class Instance:
                     line = f.readline().strip().split(" ")
                     line = list(map(int, line))
                     self.processing_times_matrix.append(line[1::2])
-                # print(self.processing_times_matrix)
                 f.readline()
                 for i in range(self.nb_jobs):
                     line = f.readline().split(" ")
                     self.due_dates.append(int(line[1]))
                     self.priority.append(int(line[-1]))
-                # print(self.due_dates)
-                # print(self.priority)
             return True
         except OSError as e:
             print("Error while opening" + filename)
@@ -91,7 +88,6 @@ class Instance:
             weights[i] = total_processing_time / self.priority[i]
         sorted_weighed_sum = dict(
             sorted(weights.items(), key=lambda item: item[1]))
-        # print(sorted_weighed_sum)
         return sorted_weighed_sum.keys()
 
     def solve_ii(self, solution, pivoting_rule, neighbourhood_method):
@@ -108,7 +104,6 @@ class Instance:
             while True:
                 temp_sol, temp_wct = get_first_improvement_neighbour(
                     self, sol, wct, neighbourhood_method)
-                # print(temp_wct)
                 if not temp_sol:
                     if wct == 0:
                         wct = temp_wct
@@ -137,7 +132,6 @@ class Instance:
         sol = solution.copy()
         wct = self.compute_wct(solution)
         while k > i:
-            # print(i)
             temp_sol, temp_wct = get_first_improvement_neighbour(
                 self, sol.copy(), wct, neighbourhood_order[i])
             if not temp_sol:
@@ -145,7 +139,5 @@ class Instance:
             else:
                 sol = temp_sol.copy()
                 wct = temp_wct
-                # print(wct)
-                # print(i)
                 i = 0
         return sol, wct

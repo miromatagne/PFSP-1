@@ -26,7 +26,7 @@ def measure_vnd_times():
     os.chdir("instances")
     files = os.listdir()
     files.sort()
-    files = [files[1]]
+    files = [files[31]]
     print(files)
     initial_solutions = [RANDOM_INIT, SRZ]
     neighbourhood_orders = [FIRST_ORDER, SECOND_ORDER]
