@@ -1,7 +1,7 @@
 """
     Main file
 
-    Usage : flowshop.py instance [options]
+    Usage : python flowshop.py instance [options]
 
     Options :   --vnd for Variable Neighbourhood Descent (Iterative Improvement by default)
                 --first or --best for First or best improvement pivoting rule
